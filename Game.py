@@ -11,27 +11,17 @@ initboard = b.Board('.', testplayer1, testplayer2 )
 INITIAL_STATE_HASH = initboard.hash_board()
 
 class Game():
-    def __init__(self, player1type, player2type, fillpiece, player1piece, player2piece):
+    def __init__(self, player1, player2, board):
         self.game_over = False
         self.turn = 0
-        self.player1type = player1type
-        self.player2type = player2type
+        self.player1 = player1
+        self.player2 = player2
+        self.player1type = player1.player_type
+        self.player2type = player2.player_type
+        self.player1piece = player1.piece
+        self.player2piece = player2.piece
+        self.board = board
 
-        if player1type == 'computer':
-            self.player1 = qa.ComputerPlayer(player1piece, INITIAL_STATE_HASH)
-        elif player1type == 'random':
-            self.player1 = qa.RandomPlayer(player1piece)
-        else:
-            self.player1 = qa.HumanPlayer(player1piece)
-
-        if player2type == 'computer':
-            self.player2 = qa.ComputerPlayer(player2piece, INITIAL_STATE_HASH)
-        elif player2type == 'random':
-            self.player2 = qa.RandomPlayer(player2piece)
-        else:
-            self.player2 = qa.HumanPlayer(player2piece)
-
-        self.board = b.Board(fillpiece, self.player1, self.player2)
 
     def start_game(self):
         self.board.print_board()
@@ -57,7 +47,10 @@ class Game():
 
                     if self.player2.player_type == "random":
                         # do random stuff
-                        print("Why would a randomint(0,6) give you an invalid number?")
+                        while(not self.board.is_valid_location(action)):
+                            print("Please Choose another value!")
+                            print(self.board.print_board())
+                            action = self.player1.chooseAction(self.board.hash_board())
 
                     else:
                         #Turn this into a while loop...
@@ -93,7 +86,10 @@ class Game():
 
                     if self.player2.player_type == "random":
                         # do random stuff
-                        print("Why would a randomint(0,6) give you an invalid number?")
+                        while(not self.board.is_valid_location(action)):
+                            print("Please Choose another value!")
+                            print(self.board.print_board())
+                            action = self.player1.chooseAction(self.board.hash_board())
 
                     else:
                         #Turn this into a while loop...
@@ -114,12 +110,23 @@ class Game():
         return 0
 
 
-#game = Game('human', 'computer', '.', 'X', 'O')
-game = Game('computer', 'computer', '.', 'X', 'O')
+
+player_uno = qa.RandomPlayer('X')
+player_dos = qa.ComputerPlayer('O', INITIAL_STATE_HASH)
+
+
+for i in range(30000):
+    bb = b.Board('.', player_uno, player_dos)
+    game = Game(player_uno,player_dos, bb)
+    game.start_game()
+    print(i)
+
+print(player_dos.q_table)
+
+#Todo: Computer player is learning but not well
+#Todo: Random player has some bug where it gets stuck in invalid move -> guessing this is full board: draw. implement this in check valid move.
+
+player_tres = qa.HumanPlayer('X')
+bb = b.Board('.', player_tres, player_dos)
+game = Game(player_tres, player_dos, bb)
 game.start_game()
-#Todo: Persist Q-table across several games... this will involve not constructing and deconstructing the q_table but making it a global var of game?
-#Todo: Pass player objects into game.startgame() call so the players don't get deconstructed. Replace self.player1/2 with input parameters.
-print(game.player1.q_table)
-print(game.player2.q_table)
-#can do something like for i in range(1000): and nest everything below in that with a computer player to keep training
-#the computer and keep it/'s Q table.

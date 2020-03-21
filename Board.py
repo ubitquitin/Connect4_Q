@@ -98,17 +98,18 @@ class Board():
             if self.in_win_state(self.player1_piece):
                 return 1
             elif self.in_win_state(self.player2_piece):
-                return -1
+                return -3
             else:
+                #reward for being alive
                 return 0
 
         elif player_piece == self.player2_piece:
             if self.in_win_state(self.player2_piece):
                 return 1
             elif self.in_win_state(self.player1_piece):
-                return -1
+                return -3
             else:
                 return 0
 
         else:
-            return 0
+            return 0.5

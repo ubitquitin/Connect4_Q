@@ -50,7 +50,7 @@ class ComputerPlayer(Player):
         self.learning_rate = 0.1  # alpha
         self.discount_rate = 0.99  # gamma
 
-        self.exploration_rate = 0.2
+        self.exploration_rate = 0.4
 
         self.rewards_all_episodes = []
         self.q_table = defaultdict(lambda: defaultdict(int))
@@ -125,8 +125,7 @@ class ComputerPlayer(Player):
         action = self.current_action
 
         #initialize q_table dict if its the first time we visit this state
-        print(len(self.q_table[new_state].values()))
-        if len(self.q_table[new_state].values()) == 0:
+        if len(self.q_table[new_state]) == 0:
             self.q_table[new_state] = [{d: 0.0} for d in range(7)]
 
         # Update Q table
