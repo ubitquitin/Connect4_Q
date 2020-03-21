@@ -103,6 +103,11 @@ class Game():
                     print("PLAYER 2 Wins!")
                     self.game_over = True
 
+            #check for full board = Draw
+            if self.board.is_full():
+                print("DRAW!")
+                self.game_over = True
+
             self.board.print_board()
             # print(board.hash_board())
             self.turn = (self.turn + 1) % 2
@@ -115,7 +120,7 @@ player_uno = qa.RandomPlayer('X')
 player_dos = qa.ComputerPlayer('O', INITIAL_STATE_HASH)
 
 
-for i in range(30000):
+for i in range(100000):
     bb = b.Board('.', player_uno, player_dos)
     game = Game(player_uno,player_dos, bb)
     game.start_game()
@@ -124,7 +129,6 @@ for i in range(30000):
 print(player_dos.q_table)
 
 #Todo: Computer player is learning but not well
-#Todo: Random player has some bug where it gets stuck in invalid move -> guessing this is full board: draw. implement this in check valid move.
 
 player_tres = qa.HumanPlayer('X')
 bb = b.Board('.', player_tres, player_dos)

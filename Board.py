@@ -12,6 +12,13 @@ class Board():
     def get_board(self):
         return self.board
 
+    def is_full(self):
+        for i in range(self.COL_COUNT):
+            if self.board[5][i] == self.fill_char:
+                return False
+
+        return True
+
     def drop_piece(self, row, col, piece):
         self.board[row][col] = piece
 
