@@ -103,7 +103,7 @@ class Board():
     def getRewardFromState(self, player_piece):
         if player_piece == self.player1_piece:
             if self.in_win_state(self.player1_piece):
-                return 1
+                return 3
             elif self.in_win_state(self.player2_piece):
                 return -3
             else:
@@ -112,7 +112,7 @@ class Board():
 
         elif player_piece == self.player2_piece:
             if self.in_win_state(self.player2_piece):
-                return 1
+                return 3
             elif self.in_win_state(self.player1_piece):
                 return -3
             else:

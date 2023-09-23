@@ -126,7 +126,7 @@ for i in range(100000):
     game.start_game()
     print(i)
 
-print(player_dos.q_table)
+#print(player_dos.q_table)
 
 #Todo: Computer player is learning but not well
 

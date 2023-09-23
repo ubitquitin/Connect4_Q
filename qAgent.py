@@ -53,59 +53,44 @@ class ComputerPlayer(Player):
         self.exploration_rate = 0.4
 
         self.rewards_all_episodes = []
-        self.q_table = defaultdict(lambda: defaultdict(int))
-        #initialize all actions for current state to have a reward of 0
-        self.q_table[initial_state] = [{d: 0.0} for d in range(7)]
+
+        #{state: {0:_, 1:_, 2:_, ...}}
+        self.q_table = {}
 
         self.old_state = -1
         self.current_action = -1
 
     def chooseAction(self, state):
         # if unvisited, add action for this state to the q table
-        #Todo: potentially buggy
-        if self.q_table[state][0] == 0:
+        if not state in list(self.q_table.keys()):
+            keys = [d for d in range(7)]
+            vals = list(np.zeros(len(keys)))
+            self.q_table[state] = dict(zip(keys, vals))
 
-            self.q_table[state] = [{d: 0.0} for d in range(7)]
+        action_values = list(self.q_table[state].values())
 
-        values = [d for d in self.q_table[state]]
-        action_values = []
-        for i in values:
-            b = max(i.values())
-            action_values.append(b)
-
+        #exploration
         if random.uniform(0, 1) < self.exploration_rate:
             action = random.randint(0,6)
-            #if unvisited, adds the action for this state to the q_table
 
         else:
             #get the max value in q_table; for nested dict index by input state and find max value in subdictionary
             #so q_table[state] should be an array of 7 values (1 for each action), get the max of these and that is our action
-
-            #print([type(d) for d in self.q_table[state]])
-            max_ind = max(action_values)
-            action = action_values.index(max(action_values)) #get the column as action.
+            action = np.argmax(action_values)
 
         self.old_state = state #update old state to current state
         self.current_action = action #sets and saves action being taken for a given move.
-
-
 
         return action
 
     #disables an invalid action for a certain state and reprompts the selection of another action.
     def disableaction(self, state, action):
-        self.q_table[state][action][action] = -1
-        print(self.q_table[state][action])
 
-        #choose a new action (max)...
-        values = [d for d in self.q_table[state]]
-        action_values = []
-        for i in values:
-            b = max(i.values())
-            action_values.append(b)
+        self.q_table[state][action] = -999
 
-        max_ind = max(action_values)
-        action = action_values.index(max(action_values))  # get the column as action.
+        action_values = list(self.q_table[state].values())
+        
+        action = np.argmax(action_values) # get the column as action.
 
         self.old_state = state  # update old state to current state
         self.current_action = action  # sets and saves action being taken for a given move.
@@ -119,33 +104,24 @@ class ComputerPlayer(Player):
 
         return self.q_table[state][action]
 
-        #called after droppiece so state should be new state now.
+    #called after droppiece so state should be new state now.
     def updateQ(self, reward, new_state):
-        state = self.old_state
-        action = self.current_action
+        greedy_state = self.old_state
+        greedy_action = self.current_action
 
         #initialize q_table dict if its the first time we visit this state
-        if len(self.q_table[new_state]) == 0:
-            self.q_table[new_state] = [{d: 0.0} for d in range(7)]
+        if not new_state in list(self.q_table.keys()):
+            keys = [d for d in range(7)]
+            vals = list(np.zeros(len(keys)))
+            self.q_table[new_state] = dict(zip(keys, vals))
 
-        # Update Q table
-        #print(self.q_table[new_state])
-        #print(self.q_table[state])
-        #print(self.q_table[state][action])
-        new_state_vals = []
-        for i in self.q_table[new_state]:
-            new_state_vals.append(list(i.values()))
-        new_state_vals_flat = [item for sublist in new_state_vals for item in sublist]
-        #print(new_state_vals_flat)
-        #print(np.max(new_state_vals_flat))
+        # Best Q value for new state
+        Qprime_SA = max(list(self.q_table[new_state].values()))
 
-        #Todo: picking 0 everytime
-        #always will be 1 element
-        state_oldaction_val = list(self.q_table[state][action])[0]
-        #print((list(self.q_table[state][action]))[0])
-        #print(state_oldaction_val)
-        self.q_table[state][action][action] = state_oldaction_val + self.learning_rate * \
-                                      (reward + (self.discount_rate * np.max(new_state_vals_flat)) - state_oldaction_val)
+        #Best Q value for current state
+        Q_SA = self.q_table[greedy_state][greedy_action]
+
+        self.q_table[greedy_state][greedy_action]= Q_SA + self.learning_rate * (reward + (self.discount_rate * Qprime_SA) - Q_SA)
 
         return
 
