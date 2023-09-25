@@ -7,4 +7,4 @@ Q learning algorithm was implemented to train an AI agent to play connect 4 agai
 Deep Q learning, powered by a PyTorch implemented neural network with epsilon degredation for exploration vs. exploitation, was implemented and game trials were conducted with both self-play (two DeepQ agents) and play against a random agent. 
 
 
-![win rate plot](https://github.com/ubitquitin/Connect4_Q/assets/14205051/f414fce4-9ae7-4176-a838-9ad26f61d662)
+![win rate plot](https://github.com/ubitquitin/Connect4_Q/assets/14205051/32b24b13-0b11-4f3b-b1bd-3dd84cf8796d)
