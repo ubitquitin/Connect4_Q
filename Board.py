@@ -1,5 +1,6 @@
 import numpy as np
 
+    
 class Board():
     def __init__(self, fill_char, player1, player2):
         self.ROW_COUNT = 6
@@ -11,6 +12,21 @@ class Board():
 
     def get_board(self):
         return self.board
+    
+    def piece_to_int(self, piece):
+        conversion_map = {
+            self.fill_char: 0,
+            self.player1_piece: 1,
+            self.player2_piece: 2
+        }
+    
+        return conversion_map[piece]
+    
+    def get_board_as_integers(self, flattened=True):
+        if flattened:
+            a = np.vectorize(self.piece_to_int)(self.board)
+            return a.flatten()
+        return a
 
     def is_full(self):
         for i in range(self.COL_COUNT):
